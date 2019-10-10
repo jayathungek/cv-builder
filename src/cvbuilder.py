@@ -5,7 +5,8 @@ import os
 def compile_latex():
     print("Compiling...")
     os.system("pdflatex ../latex/cv.tex")
-    os.system("mv *.aux *.log *.pdf ../latex")
+    os.system("mv *.aux *.log ../latex/aux")
+    os.system("mv *.pdf ../latex/out")
     print("Done.")
 
 
