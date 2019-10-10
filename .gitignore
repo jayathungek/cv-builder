@@ -1,0 +1,6 @@
+*.pyc
+*.log
+*.aux
+*.pdf
+*.sublime-project
+*.sublime-workspace
