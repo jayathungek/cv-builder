@@ -1,0 +1,446 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"ma",
+				"matplotlib"
+			],
+			[
+				"print",
+				"printmatrix"
+			],
+			[
+				"csv",
+				"csvtomatrix"
+			],
+			[
+				"i",
+				"i"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "/home/kavi/Desktop/Work/CV/src/cv_eu.tex",
+			"settings":
+			{
+				"buffer_size": 9097,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/kavi/Desktop/Work/CV/src/cv_uae.tex",
+			"settings":
+			{
+				"buffer_size": 9115,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "cvbuilder.py",
+			"settings":
+			{
+				"buffer_size": 0,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					""
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Traditional"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"PdfLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"XeLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"LuaLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder - PdfLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder - XeLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder - LuaLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Script Builder"
+				]
+			],
+			[
+				"Packages/LaTeXTools/LaTeX.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 47.75,
+		"history":
+		[
+			"import random",
+			"1+1",
+			"m"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/kavi/Desktop/Work/CV",
+		"/home/kavi/Desktop/Work/CV/src"
+	],
+	"file_history":
+	[
+		"/home/kavi/Desktop/Work/CV/src/cv_uae.pdf",
+		"/home/kavi/Desktop/misc/mahjong/server.py",
+		"/home/kavi/Desktop/misc/mahjong/client.py",
+		"/home/kavi/Desktop/Work/CV/src/cv.tex",
+		"/home/kavi/Desktop/stufftodo.txt",
+		"/home/kavi/Desktop/Work/Cover/coverletter.tex",
+		"/home/kavi/Desktop/dissertation/src/A2.tex",
+		"/home/kavi/Desktop/dissertation/src/A1.tex",
+		"/home/kavi/Desktop/dissertation/src/8_refs.bib",
+		"/home/kavi/Desktop/dissertation/src/4_cleaning.tex",
+		"/home/kavi/Desktop/dissertation/src/tset.sh",
+		"/home/kavi/Desktop/dissertation/src/E_interactionstable.tex",
+		"/home/kavi/Desktop/dissertation/src/D_dkwafertable.tex",
+		"/home/kavi/Desktop/dissertation/src/A_exptable.tex",
+		"/home/kavi/Desktop/dissertation/src/2_technical.tex",
+		"/home/kavi/Desktop/dissertation/aux/main.aux",
+		"/home/kavi/Desktop/dissertation/src/4_software.tex",
+		"/home/kavi/Desktop/dissertation/src/5_cleaning.tex",
+		"/home/kavi/Desktop/dissertation/src/8_conclusions.tex",
+		"/home/kavi/Desktop/dissertation/src/3_litreview.tex",
+		"/home/kavi/Desktop/Uni/Y5/MEngProject/images/automation_step_size/plot.py",
+		"/home/kavi/Desktop/dissertation/src/6_morphology.tex",
+		"/home/kavi/Desktop/dissertation/src/C_afmtable.tex",
+		"/home/kavi/.config/sublime-text-3/Packages/User/LaTeXTools.sublime-settings",
+		"/home/kavi/Desktop/dissertation/src/main.tex",
+		"/home/kavi/Desktop/dissertation/src/main.pdf",
+		"/home/kavi/Desktop/dissertation/src/9_refs.bib",
+		"/home/kavi/Desktop/dissertation/src/7_automation.tex",
+		"/home/kavi/Desktop/dissertation/src/B_dkmasktable.tex",
+		"/home/kavi/Desktop/dissertation/src/C_dkmaskwidthtable.tex",
+		"/home/kavi/Desktop/dissertation/src/1_intro.tex",
+		"/home/kavi/Desktop/dissertation/aux/main.log",
+		"/home/kavi/Desktop/dissertation/aux/main.bbl",
+		"/home/kavi/Desktop/dissertation/src/0a_title.tex",
+		"/home/kavi/Desktop/dissertation/src/chap5_morphology.tex",
+		"/home/kavi/Desktop/dissertation/src/chap3_litreview.tex",
+		"/home/kavi/Desktop/dissertation/src/chap4_cleaning.tex",
+		"/home/kavi/Desktop/dissertation/src/refs.bib",
+		"/home/kavi/Desktop/dissertation/src/chap6_automation.tex",
+		"/home/kavi/Desktop/dissertation/src/chap7_conclusions.tex",
+		"/home/kavi/Desktop/dissertation/src/chap1_intro.tex",
+		"/home/kavi/Desktop/dissertation/src/table.tex",
+		"/home/kavi/Desktop/dissertation/src/chap2_technical.tex",
+		"/home/kavi/Desktop/Uni/Y5/MEngProject/images/automation_step_size/extractcounts.py",
+		"/home/kavi/Desktop/misc/world-gen/mesh/Graph.py",
+		"/home/kavi/Desktop/dissertation/src/00_title.tex",
+		"/home/kavi/Desktop/dissertation/dissertation.sublime-project",
+		"/home/kavi/Desktop/dissertation/src/commands.tex",
+		"/home/kavi/Desktop/dissertation/src/abstract.tex",
+		"/home/kavi/Desktop/Uni/Y5/MEngProject/dissertation/src/table.tex",
+		"/home/kavi/Desktop/Uni/Y5/MEngProject/dissertation/src/main.tex",
+		"/home/kavi/Desktop/Uni/Y5/MEngProject/dissertation/src/refs.bib",
+		"/home/kavi/Desktop/Uni/Y5/MEngProject/dissertation/src/title.tex",
+		"/home/kavi/Desktop/Uni/Y5/MEngProject/dissertation/src/commands.tex",
+		"/home/kavi/Desktop/Uni/Y5/MEngProject/dissertation/src/signatures.tex",
+		"/home/kavi/Desktop/Uni/Y5/MEngProject/dissertation/src/contents.tex",
+		"/home/kavi/Desktop/Uni/Y5/MEngProject/dissertation/src/abstract.tex",
+		"/home/kavi/Desktop/Uni/Y5/MEngProject/dissertation/src/dedication.tex",
+		"/home/kavi/Desktop/Uni/Y5/MEngProject/dissertation/out/main.aux",
+		"/home/kavi/Desktop/Work/CV_tex/src/cv.tex",
+		"/home/kavi/Desktop/Work/CV_tex/src/cv.pdf"
+	],
+	"find":
+	{
+		"height": 32.0
+	},
+	"find_in_files":
+	{
+		"height": 82.5,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"--",
+			"linux",
+			"build",
+			"bild",
+			","
+		],
+		"highlight": true,
+		"in_selection": true,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"\\\\",
+			"--"
+		],
+		"reverse": false,
+		"show_context": false,
+		"use_buffer2": false,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 2,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/home/kavi/Desktop/Work/CV/src/cv_eu.tex",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9097,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2817,
+								2817
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/LaTeX/LaTeX.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 897.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/home/kavi/Desktop/Work/CV/src/cv_uae.tex",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9115,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4410,
+								4410
+							]
+						],
+						"settings":
+						{
+							"WordCount":
+							{
+								"changes": 0,
+								"count": 610,
+								"modified": false,
+								"selection": false,
+								"status": -1,
+								"syntax": "plain text"
+							},
+							"syntax": "Packages/LaTeX/LaTeX.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1501.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "cvbuilder.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"WordCount":
+							{
+								"changes": -1,
+								"modified": true,
+								"selection": true,
+								"status": -1,
+								"syntax": "python"
+							},
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 30.25
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 87.75
+	},
+	"output.latextools":
+	{
+		"height": 25.0
+	},
+	"pinned_build_system": "Packages/LaTeXTools/LaTeX.sublime-build",
+	"project": "cv-builder.sublime-project",
+	"replace":
+	{
+		"height": 56.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 100.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
