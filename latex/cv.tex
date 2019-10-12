@@ -1,4 +1,5 @@
 \documentclass[paper=a4,fontsize=11pt]{scrartcl} % KOMA-article class
+\usepackage{luacode}
 \usepackage[left=1.5cm, right=1.5cm, top=1.5cm, bottom=1.5cm]{geometry}
 \usepackage{multicol}
 \usepackage[english]{babel}
@@ -18,6 +19,9 @@
 \usepackage{etoolbox}
 \usepackage{tikz}
 	\usetikzlibrary{calc}
+
+\usepackage{xstring}
+
 
 \raggedbottom
 \frenchspacing              % Better looking spacings after periods
@@ -111,6 +115,7 @@
   }%
 }
 
+\newcommand{\myhello}{"/home/kavi/Pictures/meprof"} 
 %\Header{name}{email}{phone}{city}{country}{motivation}{[picture]}
 \newcommand{\Header}[7]{
 	\MyName{#1}
@@ -119,20 +124,47 @@
 	\PersonalEntry{e-mail}{\texttt{#2}}\\
 	\PersonalEntry{phone}{​\texttt{#3}}\\
 	\AddressEntry{#4}{#5}
-	\ifstrequal{#7}{none}{}{\placepicture[north east]{0.9}{0.98}{#7}}
+
+	\edef\mytemp{{#7}}%
+	\expandafter\ifstrequal\mytemp{none}{}{\placepicture[north east]{0.9}{0.98}{#7}}
 	\vskip 15pt
 	\MySlogan{#6}
 }
+
+\newcommand{\CompLen}[2]{
+  \StrLen{#1}[\MyStrLen]% find the length of the string and store it in \MyStrLen
+  \ifthenelse{\equal{\MyStrLen}{#2}} {TRUE} {FALSE}
+}
+ 
+
+ 
+
+\renewcommand{\familydefault}{\sfdefault}
 %%% Begin Document
 %%% ------------------------------------------------------------
 \begin{document}
-\renewcommand{\familydefault}{\sfdefault}
+	\begin{luacode}
+	function read(file)
+	    local handler = io.open(file, "rb")
+	    local content = handler:read("*all")
+	    handler:close()
+	    return content
+	end
+	JSON = (loadfile "JSON.lua")()
+	table = JSON:decode(read("parameters.json"))
+    \end{luacode}
+
 \Header{Kavisha Jayathunge}
 	   {​jayathunge.work@gmail.com}
 	   {(+971)524828855}
 	   {Dubai}{United Arab Emirates}
-	   {Recent engineering graduate with experience and interest in both software and hardware design. Currently looking for a software engineering role that would allow me to expand upon and improve the skills I acquired at University.}
-	   {none}
+	   {Recent engineering graduate with experience and interest in both software and hardware design. Currently looking for a software engineering role that would allow me to expand upon and improve the skills I acquired at University. 
+	   \luadirect{
+	   		str = table[0]
+	   		tex.print(str)
+	   		}
+	   	}
+	   {\luadirect{tex.print(\myhello)}}
 
 \NewPart{Work Experience}
 \ExperienceEntry{Kelvin Nanotechnology}{Glasgow, United Kingdom}{MEng intern}{jul 2018}{dec 2018}{Researched an experimental method of substrate cleaning in the University of Glasgow's Nanofabrication centre. The study involved analysing large amounts of image data, for which a bespoke commandline tool was developed.}
@@ -172,9 +204,9 @@ with​ ​ an​ ​ external​ ​ client​ ​ to​ ​ provide​ ​ a �
 \ProjectEntry{Ultrasound communications}{Team project}{Experimented with underwater power transmission and communication using ultrasound. Involved the use of a full bridge rectifier, a power management IC, and programming of an Arduino microcontroller using C.}
 
 \NewPart{Skills}
-\SkillEntry{Programming languages}{java \\​ ​ python \\​ ​ html \\​ ​ css \\​ ​ javascript \\​ ​ c \\​ c++ \\ ​c\# \\​ haskell \\ uml}
+\SkillEntry{Programming languages}{java\\​python\\​html\\​css\\​javascript\\​c\\c++\\c\#\\​haskell\\uml}
 
-\SkillEntry{Software packages / Tools}{eclipse​ ​ ide \\​ ​ orcad​ pspice \\​ ​ orcad ​ pcb ​ editor \\​ ​ xamarin forms \\​ ​ android​ ​ studio \\​ ​ git \\​ ​p5.js \\ d3.js \\ jquery \\ imagej api \\ npm \\ numpy \\ \LaTeX}
+\SkillEntry{Software packages / Tools}{eclipse​ ​ ide\\​orcad​ pspice\\​orcad ​pcb ​editor\\​xamarin forms\\​android​ studio\\​git\\​p5.js\\d3.js\\jquery\\imagej api\\npm\\numpy\\\LaTeX}
 \end{document}
 
 % \SkillEntry{Programming languages}{java \\​ ​ python \\​ ​ html \\​ ​ css \\​ ​ javascript \\​ ​ c \\​ c++ \\ ​c\# \\​ sql \\​ ​ vhdl \\ xaml \\​ ​ vb \\ ​ haskell \\ uml}
