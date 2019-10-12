@@ -144,27 +144,27 @@
 %%% ------------------------------------------------------------
 \begin{document}
 	\begin{luacode}
-	function read(file)
-	    local handler = io.open(file, "rb")
-	    local content = handler:read("*all")
-	    handler:close()
-	    return content
-	end
-	JSON = (loadfile "JSON.lua")()
-	table = JSON:decode(read("parameters.json"))
+	require("lualibs.lua")
+
+	function getjsonfile (file)
+	    local f, s
+	      f = io.open(file, 'r')
+	        s = f:read('*a')
+	        f.close()
+	        return s
+	 end
+
+	paramtable =  utilities.json.tolua(getjsonfile('parameters.json'))
     \end{luacode}
 
 \Header{Kavisha Jayathunge}
 	   {​jayathunge.work@gmail.com}
 	   {(+971)524828855}
 	   {Dubai}{United Arab Emirates}
-	   {Recent engineering graduate with experience and interest in both software and hardware design. Currently looking for a software engineering role that would allow me to expand upon and improve the skills I acquired at University. 
-	   \luadirect{
-	   		str = table[0]
-	   		tex.print(str)
-	   		}
-	   	}
-	   {\luadirect{tex.print(\myhello)}}
+	   {Recent engineering graduate with experience and interest in both software and hardware design. Currently looking for a software engineering role that would allow me to expand upon and improve the skills I acquired at University.}
+	   {\luadirect{
+	   local key = paramtable["cv_image"]
+	   tex.print(key)}}
 
 \NewPart{Work Experience}
 \ExperienceEntry{Kelvin Nanotechnology}{Glasgow, United Kingdom}{MEng intern}{jul 2018}{dec 2018}{Researched an experimental method of substrate cleaning in the University of Glasgow's Nanofabrication centre. The study involved analysing large amounts of image data, for which a bespoke commandline tool was developed.}
