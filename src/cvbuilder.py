@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import json
 import tkinter as tk 
 from tkinter import filedialog
 from PIL import ImageTk,Image
@@ -18,6 +19,12 @@ class CVBuilderWindow():
 		self.OVERLAY_AREA = None
 		self.IMAGE_CANVAS = None
 		self.MOUSE_IN_CANVAS = False
+		self.OUTPUT_JSON_PATH = "./parameters.json"
+
+	def strip_filename(self, filename):
+		i = filename.index(".")
+		print(i)
+		return filename[:i] 
 
 	def header_layout(self):
 		header_frame = tk.Frame(self.WIN)
@@ -81,7 +88,7 @@ class CVBuilderWindow():
 
 		compile_button = tk.Button(submit_frame, text="Compile")
 		compile_button.pack(side=tk.LEFT)
-		compile_button.configure(command=self.compile_latex)
+		compile_button.configure(command=self.make_cv)
 
 	def run(self):
 		self.WIN.title("CV builder")
@@ -94,12 +101,24 @@ class CVBuilderWindow():
 		image_final = ImageTk.PhotoImage(img_int)
 		return image_final
 
+
+	def save_json(self):
+		parameters = {}
+		parameters['cv_image'] = self.get_cv_image_path()
+		with open(self.OUTPUT_JSON_PATH, 'w') as outfile:
+			json.dump(parameters, outfile)
+
 	def compile_latex(self):
-	    print("Compiling...")
-	    os.system("pdflatex ../latex/cv.tex")
-	    os.system("mv *.aux *.log ../latex/aux")
-	    os.system("mv *.pdf ../latex/out")
-	    print("Done.")
+		print("Compiling...")
+		os.system("rm aux/*")
+		os.system("lualatex cv.tex")
+		os.system("mv *.aux *.log aux/")
+		os.system("mv *.pdf out/")
+		print("Done.")
+
+	def make_cv(self):
+		self.save_json()
+		self.compile_latex()
 
 	def canvas_clicked(self, event): 
 		print ("clicked at", event.x, event.y)
@@ -109,7 +128,7 @@ class CVBuilderWindow():
 				                                   filetypes = (("jpeg files","*.jpg"),("png files","*.png")))
 			print("File chosen: ", filename)
 			self.IMAGE = self.get_image(filename)
-			self.CV_IMAGE_PATH = filename
+			self.CV_IMAGE_PATH = self.strip_filename(filename)
 			self.CV_IMAGE_SET = True
 			self.IMAGE_CANVAS.itemconfig(self.IMG_AREA, image = self.IMAGE)
 		else:
@@ -125,12 +144,14 @@ class CVBuilderWindow():
 			self.OVERLAY_AREA = self.IMAGE_CANVAS.create_image(0, 0, anchor=tk.NW, image=self.OVERLAY)
 
 	def canvas_leave(self, event):
-		if self.CV_IMAGE_SET:  
+		if self.CV_IMAGE_SET:
 			self.IMAGE_CANVAS.delete(self.OVERLAY_AREA)
 
 	def get_cv_image_path(self):
-		if CV_IMAGE_SET:
+		if self.CV_IMAGE_SET:
 			return self.CV_IMAGE_PATH
+		else:
+			return "none"
 
 
 cvb = CVBuilderWindow()
