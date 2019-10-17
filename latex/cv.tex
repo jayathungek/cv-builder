@@ -117,18 +117,18 @@
 
 \newcommand{\myhello}{"/home/kavi/Pictures/meprof"} 
 %\Header{name}{email}{phone}{city}{country}{motivation}{[picture]}
-\newcommand{\Header}[7]{
+\newcommand{\Header}[8]{
 	\MyName{#1}
 	\vskip 15pt
-	\PersonalEntry{github}{​\texttt{github.com/jayathungek}}\\
-	\PersonalEntry{e-mail}{\texttt{#2}}\\
-	\PersonalEntry{phone}{​\texttt{#3}}\\
-	\AddressEntry{#4}{#5}
+	\PersonalEntry{github}{​\texttt{github.com/#2}}\\
+	\PersonalEntry{e-mail}{\texttt{#3}}\\
+	\PersonalEntry{phone}{​\texttt{#4}}\\
+	\AddressEntry{#5}{#6}
 
-	\edef\mytemp{{#7}}%
-	\expandafter\ifstrequal\mytemp{none}{}{\placepicture[north east]{0.9}{0.98}{#7}}
+	\edef\mytemp{{#8}}%
+	\expandafter\ifstrequal\mytemp{none}{}{\placepicture[north east]{0.9}{0.98}{#8}}
 	\vskip 15pt
-	\MySlogan{#6}
+	\MySlogan{#7}
 }
 
  
@@ -151,14 +151,28 @@
 	paramtable =  utilities.json.tolua(getjsonfile('../parameters.json'))
     \end{luacode}
 
-\Header{Kavisha Jayathunge}
-	   {​jayathunge.work@gmail.com}
-	   {(+971)524828855}
-	   {Dubai}{United Arab Emirates}
+\Header{\luadirect{
+	   local name = paramtable["name"]
+	   tex.print(name)}}
+	   {\luadirect{
+	   local github = paramtable["github"]
+	   tex.print(github)}}
+	   {\luadirect{
+	   local email = paramtable["email"]
+	   tex.print(email)}}
+	   {\luadirect{
+	   local phone = paramtable["phone"]
+	   tex.print(phone)}}
+	   {\luadirect{
+	   local city = paramtable["location_city"]
+	   tex.print(city)}}
+	   {\luadirect{
+	   local country = paramtable["location_country"]
+	   tex.print(country)}}
 	   {Recent engineering graduate with experience and interest in both software and hardware design. Currently looking for a software engineering role that would allow me to expand upon and improve the skills I acquired at University.}
 	   {\luadirect{
-	   local key = paramtable["cv_image"]
-	   tex.print(key)}}
+	   local picture = paramtable["cv_image"]
+	   tex.print(picture)}}
 
 \NewPart{Work Experience}
 \ExperienceEntry{Kelvin Nanotechnology}{Glasgow, United Kingdom}{MEng intern}{jul 2018}{dec 2018}{Researched an experimental method of substrate cleaning in the University of Glasgow's Nanofabrication centre. The study involved analysing large amounts of image data, for which a bespoke commandline tool was developed.}
