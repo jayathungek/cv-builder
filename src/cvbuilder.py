@@ -14,20 +14,29 @@ class CVBuilderWindow():
 		self.OVERLAY = None
 		self.BLANK_IMAGE = None
 		self.CV_IMAGE_SET = False 
-		self.CV_IMAGE_PATH = ""
 		self.WIN = tk.Tk()
 		self.IMG_AREA =None
 		self.OVERLAY_AREA = None
 		self.IMAGE_CANVAS = None
 		self.MOUSE_IN_CANVAS = False
 		self.OUTPUT_JSON_PATH = "../parameters.json"
+		self.FILEPICKER_INITIAL_DIR = "/home/kavi/Desktop/misc/cv-builder"
+
+		self.CV_IMAGE_PATH = ""
+		self.CV_IMAGE_EXT = ""
+		self.CV_NAME = tk.StringVar()
+		self.CV_EMAIL = tk.StringVar()
+		self.CV_GITHUB = tk.StringVar()
+		self.CV_PHONE = tk.StringVar()
+		self.CV_LOCATION_CITY = tk.StringVar()
+		self.CV_LOCATION_COUNTRY = tk.StringVar()
 
 	def strip_filename(self, filename):
 		i = filename.index(".")
 		print(i)
-		return filename[:i] 
+		return (filename[:i], filename[i:]) 
 
-	def header_layout(self):
+	def layout(self):
 		header_frame = tk.Frame(self.WIN)
 		header_frame.grid(row=0, column=0)
 
@@ -37,25 +46,29 @@ class CVBuilderWindow():
 		header_frame_right = tk.Frame(header_frame)
 		header_frame_right.pack(side=tk.RIGHT)
 
-		name_label = tk.Label(header_frame_left, text="Name: ").grid(row=0, column=0)
-		name_entry_text = tk.StringVar()
-		name_entry = tk.Entry(header_frame_left, textvariable=name_entry_text)
+		name_label = tk.Label(header_frame_left, text="Name: ").grid(row=0, column=0) 
+		name_entry = tk.Entry(header_frame_left, textvariable=self.CV_NAME)
 		name_entry.grid(row=0, column=1)
 
-		github_label = tk.Label(header_frame_left, text="Github: ").grid(row=1, column=0)
-		github_entry_text = tk.StringVar()
-		github_entry = tk.Entry(header_frame_left, textvariable=github_entry_text) 
+		github_label = tk.Label(header_frame_left, text="Github username: ").grid(row=1, column=0) 
+		github_entry = tk.Entry(header_frame_left, textvariable=self.CV_GITHUB) 
 		github_entry.grid(row=1, column=1)
 
-		phone_label = tk.Label(header_frame_left, text="Phone: ").grid(row=2, column=0)
-		phone_entry_text = tk.StringVar()
-		phone_entry = tk.Entry(header_frame_left, textvariable=phone_entry_text) 
+		phone_label = tk.Label(header_frame_left, text="Phone: ").grid(row=2, column=0) 
+		phone_entry = tk.Entry(header_frame_left, textvariable=self.CV_PHONE) 
 		phone_entry.grid(row=2, column=1)
 
-		location_label = tk.Label(header_frame_left, text="Location: ").grid(row=3, column=0)
-		location_entry_text = tk.StringVar()
-		location_entry = tk.Entry(header_frame_left, textvariable=location_entry_text) 
-		location_entry.grid(row=3, column=1)
+		location_city_label = tk.Label(header_frame_left, text="Location (city): ").grid(row=3, column=0) 
+		location_city_entry = tk.Entry(header_frame_left, textvariable=self.CV_LOCATION_CITY) 
+		location_city_entry.grid(row=3, column=1)
+
+		location_country_label = tk.Label(header_frame_left, text="Location: (country)").grid(row=4, column=0) 
+		location_country_entry = tk.Entry(header_frame_left, textvariable=self.CV_LOCATION_COUNTRY) 
+		location_country_entry.grid(row=4, column=1)
+
+		email_label = tk.Label(header_frame_left, text="Email: ").grid(row=5, column=0) 
+		email_entry = tk.Entry(header_frame_left, textvariable=self.CV_EMAIL) 
+		email_entry.grid(row=5, column=1)
 
 		self.IMAGE_CANVAS = tk.Canvas(header_frame_right, width = 75, height = 100)
 		self.IMAGE = self.get_image(self.BLANK_IMAGE_PATH)
@@ -87,13 +100,25 @@ class CVBuilderWindow():
 		submit_frame = tk.Frame(self.WIN)
 		submit_frame.grid(row=2, column=0)
 
-		compile_button = tk.Button(submit_frame, text="Compile")
-		compile_button.pack(side=tk.LEFT)
+		submit_buttons_frame = tk.Frame(submit_frame)
+		submit_buttons_frame.pack(side=tk.BOTTOM)
+
+		compile_button = tk.Button(submit_buttons_frame, text="Compile")
+		compile_button.grid(row=0, column=0) 
 		compile_button.configure(command=self.make_cv)
+
+		save_button = tk.Button(submit_buttons_frame, text="Save As")
+		save_button.grid(row=0, column=1) 
+		save_button.configure(command=self.save_file)
+
+		load_button = tk.Button(submit_buttons_frame, text="Load")
+		load_button.grid(row=0, column=2) 
+		load_button.configure(command=self.load_file)
+
 
 	def run(self):
 		self.WIN.title("CV builder")
-		self.header_layout()  
+		self.layout()  
 		self.WIN.mainloop()
 
 	def get_image(self, path):
@@ -103,10 +128,17 @@ class CVBuilderWindow():
 		return image_final
 
 
-	def save_json(self):
+	def save_json(self, out):
 		parameters = {}
 		parameters['cv_image'] = self.get_cv_image_path()
-		with open(self.OUTPUT_JSON_PATH, 'w') as outfile:
+		parameters['cv_image_ext'] = self.get_cv_image_ext()
+		parameters['name'] = self.CV_NAME.get()
+		parameters['email'] = self.CV_EMAIL.get()
+		parameters['github'] = self.CV_GITHUB.get()
+		parameters['phone'] = self.CV_PHONE.get()
+		parameters['location_city'] = self.CV_LOCATION_CITY.get()
+		parameters['location_country'] = self.CV_LOCATION_COUNTRY.get()
+		with open(out, 'w') as outfile:
 			json.dump(parameters, outfile)
 
 	def compile_latex(self):
@@ -136,29 +168,74 @@ class CVBuilderWindow():
 
 		print("Done.")
 
-
-
 	def make_cv(self):
-		self.save_json()
+		self.save_json(self.OUTPUT_JSON_PATH)
 		self.make_dirs()
 		self.compile_latex()
 		self.clean()
 
+	def save_file(self):
+		filename = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("json files", "*.json")])
+		if filename:
+			self.save_json(filename)
+
+
+	def load_file(self):
+		filename =  filedialog.askopenfilename(initialdir = self.FILEPICKER_INITIAL_DIR,
+				                                   title = "Select JSON file",
+				                                   filetypes = [("json files","*.json")] )		
+		parameters = {}
+		with open(filename, 'r') as f:
+			parameters = json.load(f)
+			f.close()
+
+		print("setting CV name text field to " + parameters["name"])
+		self.CV_NAME.set(parameters["name"])
+		self.CV_PHONE.set(parameters["phone"])
+		self.CV_EMAIL.set(parameters["email"])
+		self.CV_GITHUB.set(parameters["github"])
+		self.CV_LOCATION_CITY.set(parameters["location_city"])
+		self.CV_LOCATION_COUNTRY.set(parameters["location_country"])
+
+		image_path = parameters["cv_image"]
+		image_ext = parameters["cv_image_ext"]
+		if image_path != "none": 
+			self.IMAGE = self.get_image(image_path+image_ext)
+			self.CV_IMAGE_PATH = image_path
+			self.CV_IMAGE_EXT = image_ext
+			self.CV_IMAGE_SET = True
+			self.IMAGE_CANVAS.itemconfig(self.IMG_AREA, image = self.IMAGE)
+		else:
+			self.CV_IMAGE_SET = False
+			self.CV_IMAGE_PATH = ""
+			self.CV_IMAGE_EXT = ""
+			self.IMAGE_CANVAS.itemconfig(self.IMG_AREA, image = self.BLANK_IMAGE)
+			self.IMAGE_CANVAS.delete(self.OVERLAY_AREA)
+		
+
+
 	def canvas_clicked(self, event): 
 		print ("clicked at", event.x, event.y)
 		if not self.CV_IMAGE_SET:
-			filename =  filedialog.askopenfilename(initialdir = "/home/kavi/Pictures",
-				                                   title = "Select file",
-				                                   filetypes = (("jpeg files","*.jpg"),("png files","*.png")))
+			filename =  filedialog.askopenfilename(initialdir = self.FILEPICKER_INITIAL_DIR,
+				                                   title = "Select CV image",
+				                                   filetypes = ( ("jpeg files","*.jpg"),("png files","*.png")) )
 			print("File chosen: ", filename)
+
+			image = self.strip_filename(filename)
+			image_path = image[0]
+			image_ext = image[1]
+
 			self.IMAGE = self.get_image(filename)
-			self.CV_IMAGE_PATH = self.strip_filename(filename)
+			self.CV_IMAGE_PATH = image_path
+			self.CV_IMAGE_EXT = image_ext
 			self.CV_IMAGE_SET = True
 			self.IMAGE_CANVAS.itemconfig(self.IMG_AREA, image = self.IMAGE)
 		else:
 			if event.x > 60 and event.y < 15:
 				self.CV_IMAGE_SET = False
 				self.CV_IMAGE_PATH = ""
+				self.CV_IMAGE_EXT = ""
 				self.IMAGE_CANVAS.itemconfig(self.IMG_AREA, image = self.BLANK_IMAGE)
 				self.IMAGE_CANVAS.delete(self.OVERLAY_AREA)
 
@@ -176,6 +253,12 @@ class CVBuilderWindow():
 			return self.CV_IMAGE_PATH
 		else:
 			return "none"
+
+	def get_cv_image_ext(self):
+		if self.CV_IMAGE_SET:
+			return self.CV_IMAGE_EXT
+		else:
+			return ""
 
 
 cvb = CVBuilderWindow()
