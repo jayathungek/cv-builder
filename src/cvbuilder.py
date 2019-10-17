@@ -2,6 +2,7 @@
 import os
 import json
 import tkinter as tk 
+from pathlib import Path
 from tkinter import filedialog
 from PIL import ImageTk,Image
 
@@ -110,15 +111,38 @@ class CVBuilderWindow():
 
 	def compile_latex(self):
 		print("Compiling...")
-		os.system("rm aux/*")
+		os.system("rm ../out/*")
 		os.system("lualatex cv.tex")
-		os.system("mv *.aux *.log aux/")
-		os.system("mv *.pdf out/")
+		os.system("lualatex cv.tex")
+		os.system("mv *.aux *.log ../aux")
+		os.system("mv *.pdf ../out")
 		print("Done.")
+
+	def clean(self):
+		print("Cleaning temp files...")
+		os.system("rm ../aux/*")
+		print("Done")
+
+	def make_dirs(self):
+		print("Making directories...")
+		auxdir = Path("../aux")
+		outdir = Path("../out")
+
+		if not auxdir.is_dir():
+			os.system("mkdir ../aux")
+
+		if not outdir.is_dir():
+			os.system("mkdir ../out")
+
+		print("Done.")
+
+
 
 	def make_cv(self):
 		self.save_json()
+		self.make_dirs()
 		self.compile_latex()
+		self.clean()
 
 	def canvas_clicked(self, event): 
 		print ("clicked at", event.x, event.y)
