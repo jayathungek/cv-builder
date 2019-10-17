@@ -30,11 +30,154 @@ class CVBuilderWindow():
 		self.CV_PHONE = tk.StringVar()
 		self.CV_LOCATION_CITY = tk.StringVar()
 		self.CV_LOCATION_COUNTRY = tk.StringVar()
+		self.TOGGLE_ELEMENTS = []
 
 	def strip_filename(self, filename):
 		i = filename.index(".")
 		print(i)
-		return (filename[:i], filename[i:]) 
+		return (filename[:i], filename[i:])
+
+	def log(self, message="default message"):
+		print ("LOG: ", message)
+
+	def get_toggle_element_state(self, name):
+		for element in self.TOGGLE_ELEMENTS:
+			if element["name"] == name:
+				return element
+
+		return None
+	
+	def set_toggle_element_state(self, name, state):
+		for element in self.TOGGLE_ELEMENTS:
+			if element["name"] == name:
+				element = state 
+
+	# def clear_items_from_toggle_element(self, name):
+	# 	for element in self.TOGGLE_ELEMENTS:
+	# 		if element["name"] == name:
+	# 			element["items"] = {} 
+
+
+	# def add_item_to_toggle_element(self, name, item):
+	# 	for element in self.TOGGLE_ELEMENTS:
+	# 		if element["name"] == name:
+	# 			element["items"][item] = 0
+
+	# def set_item_variable_of_toggle_element(self, name, item, value):
+	# 	for element in self.TOGGLE_ELEMENTS:
+	# 		if element["name"] == name:
+	# 			element["items"][item] = value
+
+	def toggle_widget(self, checklist_type):
+		widget_state = self.get_toggle_element_state(checklist_type)
+		currently_visible = widget_state["visible"]
+		widgets = widget_state["widgets"]
+		rawtext = widget_state["rawtext"].get()
+		checkbox_widget = widget_state["itemcontainer"]
+
+		if currently_visible == 0:
+			widgets[0].grid_remove()
+			widgets[1].grid()
+			# self.log(self.get_toggle_element_state(checklist_type)["rawtext"].get())
+			
+			widget_state["visible"] = 1
+			widget_state["items"] = []
+			new_items = []
+			if len(rawtext) > 0:
+				new_items = rawtext.split(",")
+ 
+			# self.log(self.get_toggle_element_state(checklist_type)["items"])
+			for i in new_items:
+				widget_state["items"].append((i, 0))
+
+
+			# self.set_toggle_element_state(checklist_type, widget_state) 
+
+			for child in checkbox_widget.winfo_children():
+			    child.destroy()
+			
+			for item in widget_state["items"]:
+				var = tk.IntVar(item[1])
+				c = tk.Checkbutton(checkbox_widget, text=item[0], variable=var)
+				c.pack()
+		else:
+			widgets[1].grid_remove()
+			widgets[0].grid()
+
+			widget_state["visible"] = 0
+			self.set_toggle_element_state(checklist_type, widget_state)
+			
+
+	def make_separator(self, parent_frame):
+		padding = 25
+		width = parent_frame.winfo_reqwidth()
+
+		container = tk.Frame(parent_frame)
+		padding_top = tk.Frame(container, height=padding)
+		padding_top.pack(side=tk.TOP)
+
+		separator = tk.Frame(container, height=1, width=width, bg="black")
+		separator.pack()
+
+		padding_bottom = tk.Frame(container, height=padding)
+		padding_bottom.pack(side=tk.BOTTOM)
+
+		return container
+
+	def make_checklist_entry(self, parent_frame, checklist_type):
+		words = tk.StringVar()
+		word_entry_label_text = "Enter " + checklist_type + " separated by ',':"
+		checklist_type_text = "Select " + checklist_type + " as needed:"
+		currently_visible = 1
+
+		container = tk.Frame(parent_frame)
+
+		word_entry_frame = tk.Frame(container)
+		word_entry_frame.grid(row=0, column=0)
+
+		word_entry_label = tk.Label(word_entry_frame, text=word_entry_label_text)
+		word_entry_label.grid(row=0, column=0)
+		word_entry_label.pack()
+
+		word_entry = tk.Entry(word_entry_frame, textvariable=words, width=50)
+		word_entry.grid(row=1, column=0)
+		word_entry.pack()
+
+		word_entry_submit = tk.Button(word_entry_frame, text="Finish")
+		word_entry_submit.grid(row=2, column=0)
+		word_entry_submit.pack()
+
+#############################################################################################################
+		checklist_frame = tk.Frame(container)
+		checklist_frame.grid(row=1, column=0)
+
+		checklist_type = tk.Label(checklist_frame, text=checklist_type_text)
+		checklist_type.grid(row=0, column=0)
+		checklist_type.pack()
+
+		checklist_container_frame = tk.Frame(checklist_frame)
+		checklist_container_frame.grid(row=1, column=0)
+		checklist_container_frame.pack()
+
+		checklist_submit = tk.Button(checklist_frame, text="Add items")
+		checklist_submit.grid(row=2, column=0)
+		checklist_submit.pack()
+
+#############################################################################################################
+
+		toggle_widget_state = { "name": checklist_type, 
+								"visible": currently_visible, 
+								"widgets": [word_entry_frame, checklist_frame],
+								"rawtext": words,
+								"items": [],
+								"itemcontainer": checklist_container_frame}
+		self.TOGGLE_ELEMENTS.append(toggle_widget_state)
+
+		self.toggle_widget(checklist_type)
+		word_entry_submit.configure(command=lambda:self.toggle_widget(checklist_type))
+		checklist_submit.configure(command=lambda:self.toggle_widget(checklist_type))
+
+		return container
 
 	def layout(self):
 		header_frame = tk.Frame(self.WIN)
@@ -80,9 +223,12 @@ class CVBuilderWindow():
 		self.IMAGE_CANVAS.bind("<Leave>", self.canvas_leave)
 		self.IMAGE_CANVAS.pack() 
 
+		header_sep = self.make_separator(self.WIN)
+		header_sep.grid(row=1, column=0)
+
 		#############################################################################################################
 		experience_frame = tk.Frame(self.WIN)
-		experience_frame.grid(row=1, column=0)
+		experience_frame.grid(row=2, column=0)
 
 		work_exp_label = tk.Label(experience_frame, text="Work experience: ").grid(row=0, column=0) 
 		work_exp_button = tk.Button(experience_frame, text="Load from file")
@@ -96,9 +242,21 @@ class CVBuilderWindow():
 		projects_button = tk.Button(experience_frame, text="Load from file")
 		projects_button.grid(row=2, column=1)
 
+		experience_sep = self.make_separator(self.WIN)
+		experience_sep.grid(row=3, column=0)
+
 		##############################################################################################################
+
+		checklist_frame = self.make_checklist_entry(self.WIN, "programming languages")
+		checklist_frame.grid(row=4, column=0)
+
+		checklist_sep = self.make_separator(self.WIN)
+		checklist_sep.grid(row=5, column=0)
+
+		##############################################################################################################
+
 		submit_frame = tk.Frame(self.WIN)
-		submit_frame.grid(row=2, column=0)
+		submit_frame.grid(row=6, column=0)
 
 		submit_buttons_frame = tk.Frame(submit_frame)
 		submit_buttons_frame.pack(side=tk.BOTTOM)
@@ -113,7 +271,11 @@ class CVBuilderWindow():
 
 		load_button = tk.Button(submit_buttons_frame, text="Load")
 		load_button.grid(row=0, column=2) 
-		load_button.configure(command=self.load_file)
+		load_button.configure(command=self.load_file) 
+
+
+
+		
 
 
 	def run(self):
