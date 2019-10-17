@@ -20,7 +20,7 @@ class CVBuilderWindow():
 		self.OVERLAY_AREA = None
 		self.IMAGE_CANVAS = None
 		self.MOUSE_IN_CANVAS = False
-		self.OUTPUT_JSON_PATH = "./parameters.json"
+		self.OUTPUT_JSON_PATH = "../parameters.json"
 
 	def strip_filename(self, filename):
 		i = filename.index(".")
@@ -111,28 +111,28 @@ class CVBuilderWindow():
 
 	def compile_latex(self):
 		print("Compiling...")
-		os.system("rm ../out/*")
-		os.system("lualatex cv.tex")
-		os.system("lualatex cv.tex")
-		os.system("mv *.aux *.log ../aux")
-		os.system("mv *.pdf ../out")
+		os.system("rm ../latex/out/*")
+		os.system("lualatex ../latex/cv.tex")
+		os.system("lualatex ../latex/cv.tex")
+		os.system("mv *.aux *.log ../latex/aux")
+		os.system("mv *.pdf ../latex/out")
 		print("Done.")
 
 	def clean(self):
 		print("Cleaning temp files...")
-		os.system("rm ../aux/*")
+		os.system("rm ../latex/aux/*")
 		print("Done")
 
 	def make_dirs(self):
 		print("Making directories...")
-		auxdir = Path("../aux")
-		outdir = Path("../out")
+		auxdir = Path("../latex/aux")
+		outdir = Path("../latex/out")
 
 		if not auxdir.is_dir():
-			os.system("mkdir ../aux")
+			os.system("mkdir ../latex/aux")
 
 		if not outdir.is_dir():
-			os.system("mkdir ../out")
+			os.system("mkdir ../latex/out")
 
 		print("Done.")
 
