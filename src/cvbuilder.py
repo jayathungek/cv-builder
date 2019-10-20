@@ -21,6 +21,7 @@ class CVBuilderWindow():
 		self.MOUSE_IN_CANVAS = False
 		self.OUTPUT_JSON_PATH = "../parameters.json"
 		self.FILEPICKER_INITIAL_DIR = "/home/kavi/Desktop/misc/cv-builder"
+		self.CHECKLIST_SECTION_FRAME = None
 
 		self.CV_IMAGE_PATH = ""
 		self.CV_IMAGE_EXT = ""
@@ -37,6 +38,15 @@ class CVBuilderWindow():
 		print(i)
 		return (filename[:i], filename[i:])
 
+	def param_list_to_rawtext(self, param_list):
+		rawtext = ""
+		for index, item in enumerate(param_list):
+			if index != len(param_list)-1:
+				rawtext += item[0] + ","
+			else:
+				rawtext += item[0]
+		return rawtext
+
 	def log(self, message="default message"):
 		print ("LOG: ", message)
 
@@ -52,21 +62,21 @@ class CVBuilderWindow():
 			if element["name"] == name:
 				element = state 
 
-	# def clear_items_from_toggle_element(self, name):
-	# 	for element in self.TOGGLE_ELEMENTS:
-	# 		if element["name"] == name:
-	# 			element["items"] = {} 
+	def get_toggle_elements_serialisable(self):
+		elements = []
+		for element in self.TOGGLE_ELEMENTS:
+			sub_element_name = element["name"] 
+			sub_element_items = element["items"]
 
+			counter = 0
+			for child in element["itemcontainer"].winfo_children():
+				checkbox_value = child.val.get()
+				sub_element_items[counter][1] = checkbox_value
+				counter += 1
 
-	# def add_item_to_toggle_element(self, name, item):
-	# 	for element in self.TOGGLE_ELEMENTS:
-	# 		if element["name"] == name:
-	# 			element["items"][item] = 0
-
-	# def set_item_variable_of_toggle_element(self, name, item, value):
-	# 	for element in self.TOGGLE_ELEMENTS:
-	# 		if element["name"] == name:
-	# 			element["items"][item] = value
+			e = [sub_element_name, sub_element_items]
+			elements.append(e)
+		return elements
 
 	def toggle_widget(self, checklist_type):
 		widget_state = self.get_toggle_element_state(checklist_type)
@@ -75,30 +85,36 @@ class CVBuilderWindow():
 		rawtext = widget_state["rawtext"].get()
 		checkbox_widget = widget_state["itemcontainer"]
 
+
 		if currently_visible == 0:
 			widgets[0].grid_remove()
-			widgets[1].grid()
-			# self.log(self.get_toggle_element_state(checklist_type)["rawtext"].get())
+			widgets[1].grid() 
 			
 			widget_state["visible"] = 1
-			widget_state["items"] = []
+			# widget_state["items"] = []
 			new_items = []
 			if len(rawtext) > 0:
 				new_items = rawtext.split(",")
  
 			# self.log(self.get_toggle_element_state(checklist_type)["items"])
-			for i in new_items:
-				widget_state["items"].append((i, 0))
+			if len(widget_state["items"]) == 0:
+				for i in new_items:
+					temp = [i, 0]
+					widget_state["items"].append(temp)
 
 
-			# self.set_toggle_element_state(checklist_type, widget_state) 
+
+			self.set_toggle_element_state(checklist_type, widget_state) 
+			self.log(widget_state["items"])
 
 			for child in checkbox_widget.winfo_children():
 			    child.destroy()
 			
-			for item in widget_state["items"]:
-				var = tk.IntVar(item[1])
+			for item in widget_state["items"]: 
+				var = tk.IntVar()
+				var.set(item[1])
 				c = tk.Checkbutton(checkbox_widget, text=item[0], variable=var)
+				c.val = var
 				c.pack()
 		else:
 			widgets[1].grid_remove()
@@ -151,9 +167,9 @@ class CVBuilderWindow():
 		checklist_frame = tk.Frame(container)
 		checklist_frame.grid(row=1, column=0)
 
-		checklist_type = tk.Label(checklist_frame, text=checklist_type_text)
-		checklist_type.grid(row=0, column=0)
-		checklist_type.pack()
+		checklist_type_label = tk.Label(checklist_frame, text=checklist_type_text)
+		checklist_type_label.grid(row=0, column=0)
+		checklist_type_label.pack()
 
 		checklist_container_frame = tk.Frame(checklist_frame)
 		checklist_container_frame.grid(row=1, column=0)
@@ -171,13 +187,12 @@ class CVBuilderWindow():
 								"rawtext": words,
 								"items": [],
 								"itemcontainer": checklist_container_frame}
-		self.TOGGLE_ELEMENTS.append(toggle_widget_state)
-
-		self.toggle_widget(checklist_type)
+		self.log(toggle_widget_state)
+		
 		word_entry_submit.configure(command=lambda:self.toggle_widget(checklist_type))
 		checklist_submit.configure(command=lambda:self.toggle_widget(checklist_type))
 
-		return container
+		return (container, toggle_widget_state)
 
 	def layout(self):
 		header_frame = tk.Frame(self.WIN)
@@ -246,9 +261,17 @@ class CVBuilderWindow():
 		experience_sep.grid(row=3, column=0)
 
 		##############################################################################################################
+		self.CHECKLIST_SECTION_FRAME = tk.Frame(self.WIN)
+		self.CHECKLIST_SECTION_FRAME.grid(row=4, column=0)
 
-		checklist_frame = self.make_checklist_entry(self.WIN, "programming languages")
-		checklist_frame.grid(row=4, column=0)
+		checklist_type = "programming languages"
+		languages_entry = self.make_checklist_entry(self.CHECKLIST_SECTION_FRAME, checklist_type)
+		checklist_frame = languages_entry[0]
+		widget_state = languages_entry[1]
+
+		checklist_frame.grid(row=0, column=0)
+		self.TOGGLE_ELEMENTS.append(widget_state)
+		self.toggle_widget(checklist_type)
 
 		checklist_sep = self.make_separator(self.WIN)
 		checklist_sep.grid(row=5, column=0)
@@ -273,11 +296,6 @@ class CVBuilderWindow():
 		load_button.grid(row=0, column=2) 
 		load_button.configure(command=self.load_file) 
 
-
-
-		
-
-
 	def run(self):
 		self.WIN.title("CV builder")
 		self.layout()  
@@ -300,6 +318,7 @@ class CVBuilderWindow():
 		parameters['phone'] = self.CV_PHONE.get()
 		parameters['location_city'] = self.CV_LOCATION_CITY.get()
 		parameters['location_country'] = self.CV_LOCATION_COUNTRY.get()
+		parameters['checklists'] = self.get_toggle_elements_serialisable()
 		with open(out, 'w') as outfile:
 			json.dump(parameters, outfile)
 
@@ -351,7 +370,6 @@ class CVBuilderWindow():
 			parameters = json.load(f)
 			f.close()
 
-		print("setting CV name text field to " + parameters["name"])
 		self.CV_NAME.set(parameters["name"])
 		self.CV_PHONE.set(parameters["phone"])
 		self.CV_EMAIL.set(parameters["email"])
@@ -373,7 +391,30 @@ class CVBuilderWindow():
 			self.CV_IMAGE_EXT = ""
 			self.IMAGE_CANVAS.itemconfig(self.IMG_AREA, image = self.BLANK_IMAGE)
 			self.IMAGE_CANVAS.delete(self.OVERLAY_AREA)
+
+
 		
+		for checklist in parameters["checklists"]:
+			name = checklist[0]
+			list_items = checklist[1]
+			currently_visible = 1
+			rawtext = self.param_list_to_rawtext(list_items)
+
+			if len(self.TOGGLE_ELEMENTS) == 0:
+				new_checklist_entry = self.make_checklist_entry(self.CHECKLIST_SECTION_FRAME, name)
+				new_checklist_frame = new_checklist_entry[0]
+				widget_state = new_checklist_entry[1]
+				widget_state["name"] = name
+				widget_state["visible"] = currently_visible
+				widget_state["rawtext"] = rawtext
+				widget_state["items"] = list_items 
+				self.TOGGLE_ELEMENTS.append(widget_state)
+			else:
+				for widget_state in self.TOGGLE_ELEMENTS:
+					if widget_state["name"] == name:
+						widget_state["rawtext"].set(rawtext)
+						widget_state["items"] = list_items
+						self.log(list_items)
 
 
 	def canvas_clicked(self, event): 
