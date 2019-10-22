@@ -131,6 +131,9 @@
 	\MySlogan{#7}
 }
 
+\luadirect{
+package.path = './?.lua;' .. package.path
+util = require("getskill.lua")}
  
 \renewcommand{\baselinestretch}{0.99} 
 \renewcommand{\familydefault}{\sfdefault}
@@ -212,11 +215,28 @@ with​ ​ an​ ​ external​ ​ client​ ​ to​ ​ provide​ ​ a �
 \ProjectEntry{Ultrasound communications}{Team project}{Experimented with underwater power transmission and communication using ultrasound. Involved the use of a full bridge rectifier, a power management IC, and programming of an Arduino microcontroller using C.}
 
 \NewPart{Skills}
-\SkillEntry{Programming languages}{java\\​python\\​html\\​css\\​javascript\\​c\\c++\\c\#\\​haskell\\uml}
+\luadirect{
+local skills = paramtable["checklists"]
+printSkills(skills)}
+% 
 
-\SkillEntry{Software packages / Tools}{eclipse​ ​ ide\\​orcad​ pspice\\​orcad ​pcb ​editor\\​xamarin forms\\​android​ studio\\​git\\​p5.js\\d3.js\\jquery\\imagej api\\npm\\numpy\\\LaTeX}
+% \SkillEntry{Software packages / Tools}{eclipse​ ​ ide\\​orcad​ pspice\\​orcad ​pcb ​editor\\​xamarin forms\\​android​ studio\\​git\\​p5.js\\d3.js\\jquery\\imagej api\\npm\\numpy\\\LaTeX}
 \end{document}
 
 % \SkillEntry{Programming languages}{java \\​ ​ python \\​ ​ html \\​ ​ css \\​ ​ javascript \\​ ​ c \\​ c++ \\ ​c\# \\​ sql \\​ ​ vhdl \\ xaml \\​ ​ vb \\ ​ haskell \\ uml}
 
 % \SkillEntry{Software packages / Tools}{eclipse​ ​ ide \\​ ​ orcad​ pspice \\​ ​ orcad ​ pcb ​ editor \\​ ​ xamarin forms \\​ ​ android​ ​ studio \\​ ​ git \\​ ​ bitbucket \\​ ​ gitlab \\ p5.js \\ d3.js \\ node.js \\ jquery \\ imagej api \\ npm \\ numpy \\ \LaTeX \\ autodesk EAGLE \\ selenium }
+
+% local skills = paramtable["checklists"]
+% for skillCount = 1, #skills do
+% 	local skill = skills[skillCount]
+% 	local skillMembers = skill[2]
+% 	local texString = ""
+% 	for skillMemberCount = 1, #skillMembers do
+% 		local member = skillMembers[skillMemberCount]
+% 		if member[2] == 1 then
+% 			texString = texString .. member[1]
+% 		end
+% 	end
+% 	tex.print("\SkillEntry{skill}{texString}")
+% end
