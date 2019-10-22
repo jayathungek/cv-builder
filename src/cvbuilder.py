@@ -91,16 +91,25 @@ class CVBuilderWindow():
 			widgets[1].grid() 
 			
 			widget_state["visible"] = 1
-			# widget_state["items"] = []
-			new_items = []
+			new_items_text = []
 			if len(rawtext) > 0:
-				new_items = rawtext.split(",")
+				new_items_text = rawtext.split(",")
  
 			# self.log(self.get_toggle_element_state(checklist_type)["items"])
-			if len(widget_state["items"]) == 0:
-				for i in new_items:
-					temp = [i, 0]
+			# if len(widget_state["items"]) == 0:
+			# 	for i in new_items:
+			# 		temp = [i, 0]
+			# 		widget_state["items"].append(temp) 
+			if len(new_items_text) > len(widget_state["items"]):
+				start = len(widget_state["items"])
+
+				for i in range(start, len(new_items_text)):
+					text = new_items_text[i]
+					temp = [text, 0]
 					widget_state["items"].append(temp)
+
+			# self.log(rawtext)
+
 
 
 
@@ -264,7 +273,7 @@ class CVBuilderWindow():
 		self.CHECKLIST_SECTION_FRAME = tk.Frame(self.WIN)
 		self.CHECKLIST_SECTION_FRAME.grid(row=4, column=0)
 
-		checklist_type = "programming languages"
+		checklist_type = "Programming languages"
 		languages_entry = self.make_checklist_entry(self.CHECKLIST_SECTION_FRAME, checklist_type)
 		checklist_frame = languages_entry[0]
 		widget_state = languages_entry[1]
@@ -307,21 +316,6 @@ class CVBuilderWindow():
 		image_final = ImageTk.PhotoImage(img_int)
 		return image_final
 
-
-	def save_json(self, out):
-		parameters = {}
-		parameters['cv_image'] = self.get_cv_image_path()
-		parameters['cv_image_ext'] = self.get_cv_image_ext()
-		parameters['name'] = self.CV_NAME.get()
-		parameters['email'] = self.CV_EMAIL.get()
-		parameters['github'] = self.CV_GITHUB.get()
-		parameters['phone'] = self.CV_PHONE.get()
-		parameters['location_city'] = self.CV_LOCATION_CITY.get()
-		parameters['location_country'] = self.CV_LOCATION_COUNTRY.get()
-		parameters['checklists'] = self.get_toggle_elements_serialisable()
-		with open(out, 'w') as outfile:
-			json.dump(parameters, outfile)
-
 	def compile_latex(self):
 		print("Compiling...")
 		os.system("rm ../latex/out/*")
@@ -355,11 +349,20 @@ class CVBuilderWindow():
 		self.compile_latex()
 		self.clean()
 
-	def save_file(self):
-		filename = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("json files", "*.json")])
-		if filename:
-			self.save_json(filename)
-
+	def save_json(self, out):
+		parameters = {}
+		parameters['cv_image'] = self.get_cv_image_path()
+		parameters['cv_image_ext'] = self.get_cv_image_ext()
+		parameters['name'] = self.CV_NAME.get()
+		parameters['email'] = self.CV_EMAIL.get()
+		parameters['github'] = self.CV_GITHUB.get()
+		parameters['phone'] = self.CV_PHONE.get()
+		parameters['location_city'] = self.CV_LOCATION_CITY.get()
+		parameters['location_country'] = self.CV_LOCATION_COUNTRY.get()
+		parameters['checklists'] = self.get_toggle_elements_serialisable()
+		parameters['num_skills'] = len(parameters['checklists'])
+		with open(out, 'w') as outfile:
+			json.dump(parameters, outfile)
 
 	def load_file(self):
 		filename =  filedialog.askopenfilename(initialdir = self.FILEPICKER_INITIAL_DIR,
@@ -376,6 +379,7 @@ class CVBuilderWindow():
 		self.CV_GITHUB.set(parameters["github"])
 		self.CV_LOCATION_CITY.set(parameters["location_city"])
 		self.CV_LOCATION_COUNTRY.set(parameters["location_country"])
+
 
 		image_path = parameters["cv_image"]
 		image_ext = parameters["cv_image_ext"]
@@ -416,6 +420,10 @@ class CVBuilderWindow():
 						widget_state["items"] = list_items
 						self.log(list_items)
 
+	def save_file(self):
+		filename = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("json files", "*.json")])
+		if filename:
+			self.save_json(filename)
 
 	def canvas_clicked(self, event): 
 		print ("clicked at", event.x, event.y)
