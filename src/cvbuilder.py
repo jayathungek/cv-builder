@@ -93,25 +93,22 @@ class CVBuilderWindow():
 			widget_state["visible"] = 1
 			new_items_text = []
 			if len(rawtext) > 0:
-				new_items_text = rawtext.split(",")
- 
-			# self.log(self.get_toggle_element_state(checklist_type)["items"])
-			# if len(widget_state["items"]) == 0:
-			# 	for i in new_items:
-			# 		temp = [i, 0]
-			# 		widget_state["items"].append(temp) 
-			if len(new_items_text) > len(widget_state["items"]):
-				start = len(widget_state["items"])
-
-				for i in range(start, len(new_items_text)):
-					text = new_items_text[i]
-					temp = [text, 0]
-					widget_state["items"].append(temp)
-
-			# self.log(rawtext)
+				new_items_text = rawtext.split(",") 
 
 
+			new_widget_state_items = []
+			for text in new_items_text:
+				is_new_item = True
+				for item in widget_state["items"]: 
+					if text in item:
+						new_widget_state_items.append(item)
+						is_new_item = False
+						break
+				if is_new_item:
+					new_item = [text, 0]
+					new_widget_state_items.append(new_item)
 
+			widget_state["items"] = new_widget_state_items
 
 			self.set_toggle_element_state(checklist_type, widget_state) 
 			self.log(widget_state["items"])
