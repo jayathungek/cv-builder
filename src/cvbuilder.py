@@ -9,6 +9,10 @@ from PIL import ImageTk,Image
 class ChecklistNameWindow(object):
 	def __init__(self,master):
 		top = self.top = tk.Toplevel(master)
+		self.FAVICON_PATH = "../img/cvfavicon.ico"
+
+		favicon = ImageTk.PhotoImage(Image.open(self.FAVICON_PATH))
+		top.tk.call('wm', 'iconphoto', top._w, favicon)
 		self.l = tk.Label(top,text="Enter checklist name:")
 		self.l.pack()
 		self.e = tk.Entry(top)
@@ -27,7 +31,8 @@ class ChecklistNameWindow(object):
 class CVBuilderWindow():
 	def __init__(self):
 		self.BLANK_IMAGE_PATH = "../img/blank_image.png" 
-		self.OVERLAY_PATH = "../img/overlay.png" 
+		self.OVERLAY_PATH = "../img/overlay.png"
+		self.FAVICON_PATH = "../img/cvfavicon.ico"
 		self.IMAGE = None 
 		self.OVERLAY = None
 		self.BLANK_IMAGE = None
@@ -362,7 +367,6 @@ class CVBuilderWindow():
 			self.ADD_CHECKLIST_BUTTON.grid()
 
 	def insert_into_container_at(self, container, checklist, pos):
-		# end = len(container.winfo_children())-1
 		for widget in reversed(container.winfo_children()):
 			info = widget.grid_info()
 			if type(widget) != type(tk.Button()) and len(info.keys()) > 0: 
@@ -375,7 +379,10 @@ class CVBuilderWindow():
 
 	def run(self):
 		self.WIN.title("CV builder")
-		self.layout()  
+		self.layout() 
+
+		favicon = ImageTk.PhotoImage(Image.open(self.FAVICON_PATH))
+		self.WIN.tk.call('wm', 'iconphoto', self.WIN._w, favicon)
 		self.WIN.mainloop()
 
 	def get_image(self, path):
@@ -462,8 +469,6 @@ class CVBuilderWindow():
 			self.CV_IMAGE_EXT = ""
 			self.IMAGE_CANVAS.itemconfig(self.IMG_AREA, image = self.BLANK_IMAGE)
 			self.IMAGE_CANVAS.delete(self.OVERLAY_AREA)
-
-
 		
 		if parameters["num_skills"] > 0:
 			self.ADD_CHECKLIST_BUTTON.grid_remove()
