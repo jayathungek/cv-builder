@@ -6,6 +6,24 @@ from pathlib import Path
 from tkinter import filedialog
 from PIL import ImageTk,Image
 
+class ChecklistNameWindow(object):
+	def __init__(self,master):
+		top = self.top = tk.Toplevel(master)
+		self.l = tk.Label(top,text="Enter checklist name:")
+		self.l.pack()
+		self.e = tk.Entry(top)
+		self.e.pack()
+		self.b = tk.Button(top,text='Ok',command=self.cleanup)
+		self.b.pack()
+	def cleanup(self):
+		try:
+			self.value=self.e.get()
+			if self.value == "":
+				raise Exception("Checklist name cannot be empty")
+			self.top.destroy()
+		except:
+			pass 
+
 class CVBuilderWindow():
 	def __init__(self):
 		self.BLANK_IMAGE_PATH = "../img/blank_image.png" 
@@ -19,9 +37,10 @@ class CVBuilderWindow():
 		self.OVERLAY_AREA = None
 		self.IMAGE_CANVAS = None
 		self.MOUSE_IN_CANVAS = False
-		self.OUTPUT_JSON_PATH = "../parameters.json"
+		self.OUTPUT_JSON_PATH = "../latex/aux/temp.json"
 		self.FILEPICKER_INITIAL_DIR = "/home/kavi/Desktop/misc/cv-builder"
 		self.CHECKLIST_SECTION_FRAME = None
+		self.ADD_CHECKLIST_BUTTON = None
 
 		self.CV_IMAGE_PATH = ""
 		self.CV_IMAGE_EXT = ""
@@ -66,7 +85,7 @@ class CVBuilderWindow():
 		elements = []
 		for element in self.TOGGLE_ELEMENTS:
 			sub_element_name = element["name"] 
-			sub_element_items = element["items"]
+			sub_element_items = element["items"] 
 
 			counter = 0
 			for child in element["itemcontainer"].winfo_children():
@@ -110,8 +129,7 @@ class CVBuilderWindow():
 
 			widget_state["items"] = new_widget_state_items
 
-			self.set_toggle_element_state(checklist_type, widget_state) 
-			self.log(widget_state["items"])
+			self.set_toggle_element_state(checklist_type, widget_state)
 
 			for child in checkbox_widget.winfo_children():
 			    child.destroy()
@@ -185,6 +203,15 @@ class CVBuilderWindow():
 		checklist_submit.grid(row=2, column=0)
 		checklist_submit.pack()
 
+		add_checklist_button = tk.Button(container, text="+")
+		add_checklist_button.grid(row=3, column=0, sticky=tk.E)
+		add_checklist_button.configure(command=lambda button=add_checklist_button:self.add_new_checklist(button))
+
+		remove_checklist_button = tk.Button(container, text="-")
+		remove_checklist_button.grid(row=3, column=0, sticky=tk.W)
+		#pass on button context to my function
+		remove_checklist_button.configure(command= lambda button=remove_checklist_button, chk_type=checklist_type:self.remove_checklist(button, checklist_type))
+
 #############################################################################################################
 
 		toggle_widget_state = { "name": checklist_type, 
@@ -193,12 +220,15 @@ class CVBuilderWindow():
 								"rawtext": words,
 								"items": [],
 								"itemcontainer": checklist_container_frame}
-		self.log(toggle_widget_state)
 		
 		word_entry_submit.configure(command=lambda:self.toggle_widget(checklist_type))
 		checklist_submit.configure(command=lambda:self.toggle_widget(checklist_type))
+ 
+		self.TOGGLE_ELEMENTS.append(toggle_widget_state)
+		self.toggle_widget(checklist_type)
 
 		return (container, toggle_widget_state)
+
 
 	def layout(self):
 		header_frame = tk.Frame(self.WIN)
@@ -270,14 +300,12 @@ class CVBuilderWindow():
 		self.CHECKLIST_SECTION_FRAME = tk.Frame(self.WIN)
 		self.CHECKLIST_SECTION_FRAME.grid(row=4, column=0)
 
-		checklist_type = "Programming languages"
-		languages_entry = self.make_checklist_entry(self.CHECKLIST_SECTION_FRAME, checklist_type)
-		checklist_frame = languages_entry[0]
-		widget_state = languages_entry[1]
-
-		checklist_frame.grid(row=0, column=0)
-		self.TOGGLE_ELEMENTS.append(widget_state)
-		self.toggle_widget(checklist_type)
+		self.ADD_CHECKLIST_BUTTON = tk.Button(self.CHECKLIST_SECTION_FRAME, text="Add checklist")
+		self.ADD_CHECKLIST_BUTTON.grid(row=0, column=0, sticky=tk.E)
+		self.ADD_CHECKLIST_BUTTON.configure(command=lambda button=self.ADD_CHECKLIST_BUTTON:self.add_new_checklist(button))
+		if len(self.TOGGLE_ELEMENTS) == 0:
+			self.ADD_CHECKLIST_BUTTON.grid()
+ 
 
 		checklist_sep = self.make_separator(self.WIN)
 		checklist_sep.grid(row=5, column=0)
@@ -302,6 +330,49 @@ class CVBuilderWindow():
 		load_button.grid(row=0, column=2) 
 		load_button.configure(command=self.load_file) 
 
+	def add_new_checklist(self, button):
+		self.checklist_popup = ChecklistNameWindow(self.WIN)
+		self.WIN.wait_window(self.checklist_popup.top)
+		info = button.master.grid_info()
+		row = int(info["row"])
+
+		checklist_type = self.checklist_popup.value
+		checklist_entry = self.make_checklist_entry(self.CHECKLIST_SECTION_FRAME, checklist_type)
+		checklist_container = checklist_entry[0]
+
+		if button.cget('text') == "Add checklist":
+			checklist_container.grid(row=1, column=0)
+		else:
+			self.insert_into_container_at(self.CHECKLIST_SECTION_FRAME, checklist_container, row+1)
+
+		if len(self.TOGGLE_ELEMENTS) > 0:
+			self.ADD_CHECKLIST_BUTTON.grid_remove() 
+		
+
+		
+	def remove_checklist(self, button, chk_type):
+		for item in self.TOGGLE_ELEMENTS[:]:
+			if item["name"] == chk_type:
+				self.TOGGLE_ELEMENTS.remove(item)
+		info = button.master.grid_info()
+		row = int(info["row"])
+		button.master.destroy()
+
+		if len(self.TOGGLE_ELEMENTS) == 0:
+			self.ADD_CHECKLIST_BUTTON.grid()
+
+	def insert_into_container_at(self, container, checklist, pos):
+		# end = len(container.winfo_children())-1
+		for widget in reversed(container.winfo_children()):
+			info = widget.grid_info()
+			if type(widget) != type(tk.Button()) and len(info.keys()) > 0: 
+				row = int(info["row"])
+				if row >= pos:
+					widget.grid(row=row+1, column=0) 
+
+		checklist.grid(row=pos, column=0)
+
+
 	def run(self):
 		self.WIN.title("CV builder")
 		self.layout()  
@@ -316,9 +387,8 @@ class CVBuilderWindow():
 	def compile_latex(self):
 		print("Compiling...")
 		os.system("rm ../latex/out/*")
-		os.system("lualatex ../latex/cv.tex")
-		os.system("lualatex ../latex/cv.tex")
-		os.system("mv *.aux *.log ../latex/aux")
+		os.system("latexmk -lualatex ../latex/cv.tex") 
+		os.system("mv *.aux *.log *.fls *.fdb_latexmk ../latex/aux")
 		os.system("mv *.pdf ../latex/out")
 		print("Done.")
 
@@ -341,8 +411,8 @@ class CVBuilderWindow():
 		print("Done.")
 
 	def make_cv(self):
-		self.save_json(self.OUTPUT_JSON_PATH)
 		self.make_dirs()
+		self.save_json(self.OUTPUT_JSON_PATH)
 		self.compile_latex()
 		self.clean()
 
@@ -359,7 +429,7 @@ class CVBuilderWindow():
 		parameters['checklists'] = self.get_toggle_elements_serialisable()
 		parameters['num_skills'] = len(parameters['checklists'])
 		with open(out, 'w') as outfile:
-			json.dump(parameters, outfile)
+			json.dump(parameters, outfile) 
 
 	def load_file(self):
 		filename =  filedialog.askopenfilename(initialdir = self.FILEPICKER_INITIAL_DIR,
@@ -395,27 +465,33 @@ class CVBuilderWindow():
 
 
 		
-		for checklist in parameters["checklists"]:
+		if parameters["num_skills"] > 0:
+			self.ADD_CHECKLIST_BUTTON.grid_remove()
+		else:
+			self.ADD_CHECKLIST_BUTTON.grid()
+
+		self.TOGGLE_ELEMENTS = []
+		for child in self.CHECKLIST_SECTION_FRAME.winfo_children():
+			if type(child) != type(tk.Button()):
+				child.grid_forget()
+
+		for index, checklist in enumerate(parameters["checklists"]):
 			name = checklist[0]
 			list_items = checklist[1]
 			currently_visible = 1
-			rawtext = self.param_list_to_rawtext(list_items)
+			rawtext_value = self.param_list_to_rawtext(list_items) 
+ 
+			new_checklist_entry = self.make_checklist_entry(self.CHECKLIST_SECTION_FRAME, name)
+			new_checklist_frame =new_checklist_entry[0]
+			widget_state = new_checklist_entry[1]
 
-			if len(self.TOGGLE_ELEMENTS) == 0:
-				new_checklist_entry = self.make_checklist_entry(self.CHECKLIST_SECTION_FRAME, name)
-				new_checklist_frame = new_checklist_entry[0]
-				widget_state = new_checklist_entry[1]
-				widget_state["name"] = name
-				widget_state["visible"] = currently_visible
-				widget_state["rawtext"] = rawtext
-				widget_state["items"] = list_items 
-				self.TOGGLE_ELEMENTS.append(widget_state)
-			else:
-				for widget_state in self.TOGGLE_ELEMENTS:
-					if widget_state["name"] == name:
-						widget_state["rawtext"].set(rawtext)
-						widget_state["items"] = list_items
-						self.log(list_items)
+			widget_state["name"] = name
+			widget_state["visible"] = currently_visible
+			widget_state["rawtext"].set(rawtext_value)
+			widget_state["items"] = list_items
+  
+			new_checklist_frame.grid(row=index+1, column=0) 
+ 
 
 	def save_file(self):
 		filename = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("json files", "*.json")])
