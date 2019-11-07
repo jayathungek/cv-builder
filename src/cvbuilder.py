@@ -19,6 +19,27 @@ class ChecklistNameWindow(object):
 		self.e.pack()
 		self.b = tk.Button(top,text='Ok',command=self.cleanup)
 		self.b.pack()
+
+		self.e.bind('<Control-a>', self.callback)
+		# self.e.bind('<Control-c>', self.callback)
+		# self.e.bind('<Control-x>', self.callback)
+		# self.e.bind('<Control-v>', self.callback)
+
+
+	def callback(self, event):
+		if event.keysym == "a":
+			self.top.after(50, self.select_all, event.widget)
+		# elif event.keysym == "c":
+		# 	self.top.after(50, self.select_all, event.widget)
+		# elif event.keysym == "v":
+		# 	self.top.after(50, self.select_all, event.widget)
+		# elif event.keysym == "x":
+		# 	self.top.after(50, self.select_all, event.widget)
+
+	def select_all(self, widget):
+		widget.select_range(0, 'end')
+		widget.icursor('end')
+
 	def cleanup(self):
 		try:
 			self.value=self.e.get()
@@ -43,7 +64,7 @@ class CVBuilderWindow():
 		self.IMAGE_CANVAS = None
 		self.MOUSE_IN_CANVAS = False
 		self.OUTPUT_JSON_PATH = "../latex/aux/temp.json"
-		self.FILEPICKER_INITIAL_DIR = "/home/kavi/Desktop/misc/cv-builder"
+		self.FILEPICKER_INITIAL_DIR = "./"
 		self.CHECKLIST_SECTION_FRAME = None
 		self.ADD_CHECKLIST_BUTTON = None
 
@@ -56,6 +77,25 @@ class CVBuilderWindow():
 		self.CV_LOCATION_CITY = tk.StringVar()
 		self.CV_LOCATION_COUNTRY = tk.StringVar()
 		self.TOGGLE_ELEMENTS = []
+
+
+	def callback(self, event):
+		if event.keysym == "a":
+			# after releasing keys <Control-a> selection is 
+			# removed so I use after() to execute selection after 50ms. 
+			# It selects all text (but it moves cursor to the beginning) 
+			# and moves cursor to the end.
+			self.WIN.after(50, self.select_all, event.widget)
+		# elif event.keysym == "c":
+		# 	self.top.after(50, self.select_all, event.widget)
+		# elif event.keysym == "v":
+		# 	self.top.after(50, self.select_all, event.widget)
+		# elif event.keysym == "x":
+		# 	self.top.after(50, self.select_all, event.widget)
+
+	def select_all(self, widget):
+		widget.select_range(0, 'end')
+		widget.icursor('end')
 
 	def strip_filename(self, filename):
 		i = filename.index(".")
@@ -185,6 +225,7 @@ class CVBuilderWindow():
 		word_entry_label.pack()
 
 		word_entry = tk.Entry(word_entry_frame, textvariable=words, width=50)
+		word_entry.bind('<Control-a>', self.callback)
 		word_entry.grid(row=1, column=0)
 		word_entry.pack()
 
@@ -247,26 +288,32 @@ class CVBuilderWindow():
 
 		name_label = tk.Label(header_frame_left, text="Name: ").grid(row=0, column=0) 
 		name_entry = tk.Entry(header_frame_left, textvariable=self.CV_NAME)
+		name_entry.bind('<Control-a>', self.callback)
 		name_entry.grid(row=0, column=1)
 
 		github_label = tk.Label(header_frame_left, text="Github username: ").grid(row=1, column=0) 
-		github_entry = tk.Entry(header_frame_left, textvariable=self.CV_GITHUB) 
+		github_entry = tk.Entry(header_frame_left, textvariable=self.CV_GITHUB)
+		github_entry.bind('<Control-a>', self.callback) 
 		github_entry.grid(row=1, column=1)
 
 		phone_label = tk.Label(header_frame_left, text="Phone: ").grid(row=2, column=0) 
-		phone_entry = tk.Entry(header_frame_left, textvariable=self.CV_PHONE) 
+		phone_entry = tk.Entry(header_frame_left, textvariable=self.CV_PHONE)
+		phone_entry.bind('<Control-a>', self.callback) 
 		phone_entry.grid(row=2, column=1)
 
 		location_city_label = tk.Label(header_frame_left, text="Location (city): ").grid(row=3, column=0) 
-		location_city_entry = tk.Entry(header_frame_left, textvariable=self.CV_LOCATION_CITY) 
+		location_city_entry = tk.Entry(header_frame_left, textvariable=self.CV_LOCATION_CITY)
+		location_city_entry.bind('<Control-a>', self.callback) 
 		location_city_entry.grid(row=3, column=1)
 
 		location_country_label = tk.Label(header_frame_left, text="Location: (country)").grid(row=4, column=0) 
-		location_country_entry = tk.Entry(header_frame_left, textvariable=self.CV_LOCATION_COUNTRY) 
+		location_country_entry = tk.Entry(header_frame_left, textvariable=self.CV_LOCATION_COUNTRY)
+		location_country_entry.bind('<Control-a>', self.callback) 
 		location_country_entry.grid(row=4, column=1)
 
 		email_label = tk.Label(header_frame_left, text="Email: ").grid(row=5, column=0) 
-		email_entry = tk.Entry(header_frame_left, textvariable=self.CV_EMAIL) 
+		email_entry = tk.Entry(header_frame_left, textvariable=self.CV_EMAIL)
+		email_entry.bind('<Control-a>', self.callback) 
 		email_entry.grid(row=5, column=1)
 
 		self.IMAGE_CANVAS = tk.Canvas(header_frame_right, width = 75, height = 100)
